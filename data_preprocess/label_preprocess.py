@@ -1,16 +1,17 @@
 import numpy as np
+import os
 
 def load_label(fname, split=False, rate=None):
-    f = open(fname)
     cnt, idx, tidx = 0, [], []
-    for line in f:
-        cnt += 1
-        if cnt % 10000 == 0:
-            print cnt
-        terms = line.strip().split('\t')
-        idx.append(terms[0])
-        if len(terms) == 2:
-            tidx.append(terms[1])
+    with open(fname, "r") as f:
+        for line in f:
+            cnt += 1
+            if cnt % 10000 == 0:
+                print cnt
+            terms = line.strip().split('\t')
+            idx.append(terms[0])
+            if len(terms) == 2:
+                tidx.append(terms[1])
     if split:
         ids = np.arange(cnt)
         np.random.seed(1024)
@@ -46,11 +47,20 @@ train_label_all = getLabelid(train_label_idx_all, topic_idx_dict)
 print 'Get train label all finished!'
 
 basedir = './train'
+if not os.path.exists(basedir):
+    os.mkdir(basedir)
+    
 np.save('{}/train_label_indices.npy'.format(basedir), train_label)
 print 'Save train label finished!'
 basedir = './val'
+if not os.path.exists(basedir):
+    os.mkdir(basedir)
+
 np.save('{}/val_label_indices.npy'.format(basedir), val_label)
 print 'Save val label finished!'
+
 basedir = './train_all'
+if not os.path.exists(basedir):
+    os.mkdir(basedir)
 np.save('{}/train_label_indices_all.npy'.format(basedir), train_label_all)
 print 'Save train label all finished!'
